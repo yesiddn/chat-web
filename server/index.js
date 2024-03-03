@@ -7,7 +7,7 @@ const app = express()
 app.use(logger('dev')) // logger de http request en consola
 
 app.get('/', (req, res) => {
-  res.send('<h1>Esto es el chat</h1>')
+  res.sendFile(process.cwd() + '/client/index.html') // servir un archivo estático usando process current working directory
 })
 
 app.listen(port, () => {
