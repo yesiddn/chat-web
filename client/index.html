@@ -6,6 +6,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Chat web</title>
 
+  <script type="module">
+    import { io } from 'https://cdn.socket.io/4.7.4/socket.io.esm.min.js'
+
+    const socket = io() // se le puede pasar la url del servidor pero por defecto busca en la misma url que el cliente y se va a conectar
+  </script>
+
   <style>
     *,
     *::before,
