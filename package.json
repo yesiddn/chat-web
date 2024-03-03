@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "my first chat web",
   "main": "index.js",
+  "type": "module",
   "scripts": {
+    "dev": "node --watch server/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -21,6 +23,7 @@
   },
   "homepage": "https://github.com/yesiddn/chat-web#readme",
   "dependencies": {
-    "express": "4.18.3"
+    "express": "4.18.3",
+    "morgan": "1.10.0"
   }
 }
