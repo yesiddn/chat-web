@@ -10,6 +10,17 @@
     import { io } from 'https://cdn.socket.io/4.7.4/socket.io.esm.min.js'
 
     const socket = io() // se le puede pasar la url del servidor pero por defecto busca en la misma url que el cliente y se va a conectar
+
+    const form = document.getElementById('form')
+    const input = document.getElementById('input')
+
+    form.addEventListener('submit', e => {
+      e.preventDefault()
+      if (input.value) {
+        socket.emit('chat message', input.value) // emite el evento chat message con el valor del input
+        input.value = ''
+      }
+    }, false)
   </script>
 
   <style>
