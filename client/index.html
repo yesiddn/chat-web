@@ -31,7 +31,7 @@
       grid-template-rows: 1fr;
       height: 100svh;
       margin: 0;
-      padding: 36px;
+      padding: 48px 36px;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     }
 
@@ -42,6 +42,42 @@
       border-radius: 4px;
       border: 1px solid #ccc;
       overflow: hidden;
+    }
+
+    #form {
+      position: absolute;
+      display: flex;
+      height: 48px;
+      padding: 4px;
+      left: 0;
+      right: 0;
+      bottom: 0;
+    }
+
+    #input {
+      border-radius: 999px;
+      border: 1px solid #eee;
+      flex: 1;
+      border: none;
+      padding: 0 8px;
+    }
+
+    #input:focus {
+      outline: none;
+    }
+
+    #form>button {
+      margin: 4px;
+      padding: 0 8px;
+      background: #09f;
+      border: none;
+      border-radius: 4px;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    #form>button:hover {
+      background: #0cf;
     }
   </style>
 </head>
