@@ -15,6 +15,10 @@ io.on('connection', (socket) => {
   socket.on('disconnect', () => {
     console.log('an user has disconnected')
   })
+
+  socket.on('chat message', (msg) => {
+    io.emit('chat message', msg) // envia el mensaje a todos los usuarios conectados
+  })
 })
 
 app.use(logger('dev')) // logger de http request en consola
