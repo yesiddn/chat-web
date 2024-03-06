@@ -7,7 +7,9 @@ const port = process.env.PORT ?? 3000
 
 const app = express()
 const server = createServer(app)
-const io = new Server(server) // io -> in and out
+const io = new Server(server, {
+  connectionStateRecovery: true, // habilita la recuperación de estado de conexión
+}) // io -> in and out
 
 io.on('connection', (socket) => {
   console.log('an user has connected')
