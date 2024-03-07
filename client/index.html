@@ -9,16 +9,21 @@
   <script type="module">
     import { io } from 'https://cdn.socket.io/4.7.4/socket.io.esm.min.js'
 
-    const socket = io() // se le puede pasar la url del servidor pero por defecto busca en la misma url que el cliente y se va a conectar
+    const socket = io({
+      auth: { // se queda pegado en todos los mensajes que se envian al servidor
+        serverOffset: 0
+      }
+    }) // se le puede pasar la url del servidor pero por defecto busca en la misma url que el cliente y se va a conectar
 
     const form = document.getElementById('form')
     const input = document.getElementById('input')
     const messages = document.getElementById('messages')
 
-    socket.on('chat message', msg => {
+    socket.on('chat message', (msg, serverOffset) => {
       const item = `<li>${msg}</li>`
       messages.insertAdjacentHTML('beforeend', item)
       window.scrollTo(0, document.body.scrollHeight)
+      socket.auth.serverOffset = serverOffset
     })
 
     form.addEventListener('submit', e => {
