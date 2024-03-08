@@ -9,8 +9,19 @@
   <script type="module">
     import { io } from 'https://cdn.socket.io/4.7.4/socket.io.esm.min.js'
 
+    const getUsername = async () => {
+      const username = localStorage.getItem('username')
+      if (username) return username
+
+      const res = await fetch('https://random-data-api.com/api/users/random_user')
+      const { username: randomUsername } = await res.json()
+      localStorage.setItem('username', randomUsername)
+      return randomUsername
+    }
+
     const socket = io({
       auth: { // se queda pegado en todos los mensajes que se envian al servidor
+        username: await getUsername(),
         serverOffset: 0
       }
     }) // se le puede pasar la url del servidor pero por defecto busca en la misma url que el cliente y se va a conectar
@@ -19,11 +30,16 @@
     const input = document.getElementById('input')
     const messages = document.getElementById('messages')
 
-    socket.on('chat message', (msg, serverOffset) => {
-      const item = `<li>${msg}</li>`
+    socket.on('chat message', (msg, serverOffset, username) => {
+      const item = `
+        <li>
+          <small>${username}</small>
+          <p>${msg}</p>
+        </li>`
       messages.insertAdjacentHTML('beforeend', item)
-      window.scrollTo(0, document.body.scrollHeight)
       socket.auth.serverOffset = serverOffset
+      // scroll to bottom of messages
+      messages.scrollTop = messages.scrollHeight
     })
 
     form.addEventListener('submit', e => {
@@ -68,9 +84,12 @@
     }
 
     #messages {
+      height: 100%;
       margin: 0;
-      padding: 0;
+      padding: 0 0 48px;
       list-style-type: none;
+      overflow-y: auto;
+      scroll-behavior: smooth;
     }
 
     #messages>li {
@@ -78,8 +97,7 @@
     }
 
     #messages>li:nth-child(odd) {
-      background: #eee;
-      color: #666;
+      background: #000;
     }
 
     #form {

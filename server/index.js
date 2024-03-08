@@ -5,7 +5,6 @@ import { createClient } from '@libsql/client' // importar el cliente de libsql p
 
 import { Server } from 'socket.io'
 import { createServer } from 'node:http'
-import { Console } from 'node:console'
 
 dotenv.config() // carga las variables de entorno desde el archivo .env
 
@@ -23,7 +22,7 @@ const db = createClient({
 })
 
 await db.execute(`
-CREATE TABLE IF NOT EXISTS messages(id INTEGER PRIMARY KEY AUTOINCREMENT, message TEXT)`) // crea la tabla si no existe
+CREATE TABLE IF NOT EXISTS messages(id INTEGER PRIMARY KEY AUTOINCREMENT, message TEXT, user TEXT)`) // crea la tabla si no existe
 
 io.on('connection', async (socket) => {
   console.log('an user has connected')
@@ -34,12 +33,15 @@ io.on('connection', async (socket) => {
 
   socket.on('chat message', async (msg) => {
     let result
+    const username = socket.handshake.auth.username ?? 'anonymous' // obtener el nombre de usuario del socket
+
     try {
       result = await db.execute(
         {
-          sql: 'INSERT INTO messages(message) VALUES(:msg)',
+          sql: 'INSERT INTO messages(message, user) VALUES(:msg, :username)',
           args: {
-            msg
+            msg,
+            username
           }
         }
       )
@@ -48,7 +50,7 @@ io.on('connection', async (socket) => {
       return
     }
 
-    io.emit('chat message', msg, result.lastInsertRowid.toString()) // envia el mensaje a todos los usuarios conectados y además el id del mensaje
+    io.emit('chat message', msg, result.lastInsertRowid.toString(), username) // envia el mensaje a todos los usuarios conectados y además el id del mensaje
   })
 
   // console.log('auth: ', socket.handshake.auth) // imprime los datos de autenticación del socket (si es que hay alguno
@@ -61,7 +63,7 @@ io.on('connection', async (socket) => {
       })
 
       results.rows.forEach(row => {
-        socket.emit('chat message', row.message, row.id.toString()) // envia el mensaje al usuario que se ha reconectado
+        socket.emit('chat message', row.message, row.id.toString(), row.user) // envia el mensaje al usuario que se ha reconectado
       })
     } catch (error) {
       console.error(error)
